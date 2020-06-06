@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_estudiantes">
+
+    <fragment
+        android:id="@+id/nav_estudiantes"
+        android:name="com.lab09_lab10.ui.estudiantes.EstudiantesFragment"
+        android:label="@string/menu_estudiantes"
+        tools:layout="@layout/fragment_estudiantes">
+        <action
+            android:id="@+id/action_nav_estudiantes_to_EstEdiGuaFragment"
+            app:destination="@id/EstEdiGuaFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_cursos"
+        android:name="com.lab09_lab10.ui.cursos.CursosFragment"
+        android:label="@string/menu_cursos"
+        tools:layout="@layout/fragment_cursos" >
+        <action
+            android:id="@+id/action_nav_cursos_to_CurEdiGuaFragment"
+            app:destination="@id/CurEdiGuaFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/EstEdiGuaFragment"
+        android:name="com.lab09_lab10.ui.estEdiGua.EstEdiGuaFragment"
+        tools:layout="@layout/fragment_est_edi_gua" >
+        <action
+            android:id="@+id/action_EstEdiGuaFragment_to_nav_estudiantes"
+            app:destination="@id/nav_estudiantes" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/CurEdiGuaFragment"
+        android:name="com.lab09_lab10.ui.curEditGua.CurEdiGuaFragment"
+        tools:layout="@layout/fragment_cur_edi_gua">
+
+        <action
+            android:id="@+id/action_CurEdiGuaFragment_to_nav_cursos"
+            app:destination="@id/nav_cursos" />
+    </fragment>
+
+
+</navigation>
