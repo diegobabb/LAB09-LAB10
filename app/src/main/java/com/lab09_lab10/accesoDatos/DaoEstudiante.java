@@ -47,7 +47,7 @@ public class DaoEstudiante extends DaoBase {
         String pre_sql_matriculados = "DELETE FROM ESTUDIANTExCURSO WHERE cedula = '%s'";
 
         String sql = String.format(pre_sql, args[0]);
-        String sql_eliminar_matriculados = String.format(pre_sql, args[0]);
+        String sql_eliminar_matriculados = String.format(pre_sql_matriculados, args[0]);
 
         try {
             database.execSQL(sql);

@@ -44,7 +44,6 @@ public class EstEdiGuaFragment extends Fragment implements View.OnClickListener 
     FloatingActionButton floatingActionButton;
     MyAdapterChecked adapter;
     public boolean editar;
-    int pos = 0;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -137,8 +136,6 @@ public class EstEdiGuaFragment extends Fragment implements View.OnClickListener 
             }
         } else
             editar = false;
-
-
     }
 
     @Override

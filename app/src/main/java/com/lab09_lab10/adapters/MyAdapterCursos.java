@@ -55,8 +55,8 @@ public class MyAdapterCursos extends RecyclerView.Adapter<MyAdapterCursos.ViewHo
     public void onBindViewHolder(@NonNull MyAdapterCursos.ViewHolder viewHolder, int i) {
         Curso curso = mDataset.get(i);
         viewHolder.descripcion.setText(curso.getDescripcion());
-        viewHolder.creditos.setText(curso.getCreditos());
-        viewHolder.codigo.setText(curso.getCodigo());
+        viewHolder.creditos.setText("Creditos : " + String.valueOf(curso.getCreditos()));
+        viewHolder.codigo.setText("NRC : " + curso.getCodigo());
     }
 
     @Override

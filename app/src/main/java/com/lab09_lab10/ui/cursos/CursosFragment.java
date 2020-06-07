@@ -1,8 +1,10 @@
 package com.lab09_lab10.ui.cursos;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -18,6 +20,10 @@ import com.lab09_lab10.R;
 import com.lab09_lab10.adapters.MyAdapterCursos;
 import com.lab09_lab10.logicaNegocio.Curso;
 import com.lab09_lab10.logicaNegocio.Datos;
+import com.lab09_lab10.ui.curEditGua.CurEdiGuaFragment;
+import com.lab09_lab10.ui.estEdiGua.EstEdiGuaFragment;
+import com.lab09_lab10.ui.estEdiGua.EstEdiGuaViewModel;
+import com.lab09_lab10.ui.estudiantes.EstudiantesFragment;
 
 import java.util.Objects;
 
@@ -27,10 +33,14 @@ public class CursosFragment extends Fragment implements View.OnClickListener {
     static final String ARG_POSITION = "position";
     MyAdapterCursos myAdapterCursos;
     FloatingActionButton floatingActionButton;
+    CursosViewModel cursosViewModel;
 
     @SuppressLint("RestrictedApi")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        this.cursosViewModel = ViewModelProviders.of(this).get(CursosViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_cursos, container, false);
         final RecyclerView recyclerView = root.findViewById(R.id.recycleView);
 
@@ -39,6 +49,7 @@ public class CursosFragment extends Fragment implements View.OnClickListener {
         LinearLayoutManager layoutManager = new LinearLayoutManager(root.getContext());
         layoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(layoutManager);
+        cursosViewModel.listar();
         myAdapterCursos = new MyAdapterCursos(Datos.getInstance().getCursos());
         recyclerView.setAdapter(myAdapterCursos);
 
@@ -50,15 +61,20 @@ public class CursosFragment extends Fragment implements View.OnClickListener {
         floatingActionButton = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setOnClickListener(this);
+
         return root;
     }
 
     public void moveToCurEdiGua(Curso curso, int position) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(CursosFragment.ARG_CURSO, curso);
-        bundle.putInt(CursosFragment.ARG_POSITION, position);
-        NavHostFragment.findNavController(CursosFragment.this)
-                .navigate(R.id.action_nav_estudiantes_to_EstEdiGuaFragment);
+        CurEdiGuaFragment newFragment = new CurEdiGuaFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(CursosFragment.ARG_CURSO, curso);
+        args.putInt(CursosFragment.ARG_POSITION, position);
+        newFragment.setArguments(args);
+        FragmentTransaction transaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @SuppressLint("RestrictedApi")
@@ -67,7 +83,7 @@ public class CursosFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         setHasOptionsMenu(true);
         floatingActionButton.setVisibility(View.VISIBLE);
-        myAdapterCursos.notifyDataSetChanged();
+         myAdapterCursos.notifyDataSetChanged();
     }
 
     @Override

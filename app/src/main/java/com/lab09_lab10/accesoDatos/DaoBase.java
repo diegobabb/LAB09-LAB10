@@ -39,12 +39,6 @@ public abstract class DaoBase {
                 "cedula text," +
                 "codigo text );");
 
-        database.execSQL("insert or ignore  into CURSO(codigo, descripcion, creditos) values ('FIN', 'Fundamentos de informatica', 3 );");
-        database.execSQL("insert or ignore  into CURSO(codigo, descripcion, creditos) values ('PRO1', 'Programacion 1', 3 );");
-        database.execSQL("insert or ignore  into CURSO(codigo, descripcion, creditos) values ('PRO2', 'Programacion 2', 3 );");
-        database.execSQL("insert or ignore  into CURSO(codigo, descripcion, creditos) values ('PRO3', 'Programacion 3', 4 );");
-        database.execSQL("insert or ignore  into CURSO(codigo, descripcion, creditos) values ('EST', 'Estructuras de datos', 4 );");
-
         database.setTransactionSuccessful(); //commit your changes
         database.endTransaction();
     }

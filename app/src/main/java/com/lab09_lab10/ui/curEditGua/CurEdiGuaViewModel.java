@@ -42,4 +42,6 @@ public class CurEdiGuaViewModel extends ViewModel {
             return true;
         return username.trim().isEmpty();
     }
+
+    //TODO: CRUD CURSOS
 }

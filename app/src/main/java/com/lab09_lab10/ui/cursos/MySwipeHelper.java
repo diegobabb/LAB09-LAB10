@@ -10,6 +10,10 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import com.lab09_lab10.R;
 import com.lab09_lab10.adapters.MyAdapterCursos;
 import com.lab09_lab10.logicaNegocio.Curso;
+import com.lab09_lab10.logicaNegocio.Datos;
+import com.lab09_lab10.ui.estudiantes.EstudiantesViewModel;
+
+import java.util.Objects;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
@@ -17,11 +21,13 @@ public class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
 
     private MyAdapterCursos adapter;
     private CursosFragment fragment;
+    private CursosViewModel model;
 
     public MySwipeHelper(int dragDirs, int swipeDirs, MyAdapterCursos adapter, CursosFragment fragment) {
         super(dragDirs, swipeDirs);
         this.adapter = adapter;
         this.fragment = fragment;
+        this.model = new CursosViewModel(Objects.requireNonNull(fragment.getActivity()).getApplication());
     }
 
     @Override
@@ -36,7 +42,9 @@ public class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
         switch (direction) {
             case ItemTouchHelper.LEFT:
                 final Curso aux = adapter.getmDataset().remove(position);
-                // TODO : eliminarCurso(aux, position);
+                model.eliminar(aux.getCodigo());
+                Datos.getInstance().getCursos().remove(aux);
+                adapter.notifyItemRemoved(position);
                 break;
             case ItemTouchHelper.RIGHT:
                 fragment.moveToCurEdiGua(adapter.getmDataset().get(position), position);
