@@ -1,18 +1,33 @@
 package com.lab09_lab10.ui.estEdiGua;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.lab09_lab10.R;
+import com.lab09_lab10.accesoDatos.DaoCurso;
+import com.lab09_lab10.accesoDatos.DaoEstudiante;
+import com.lab09_lab10.accesoDatos.Operacion;
+import com.lab09_lab10.logicaNegocio.Curso;
+import com.lab09_lab10.logicaNegocio.Datos;
+import com.lab09_lab10.logicaNegocio.Estudiante;
 
-public class EstEdiGuaViewModel extends ViewModel {
+import java.util.ArrayList;
+import java.util.List;
 
-    private MutableLiveData<EstEdiGuaFormState> estEdiGuaFormState;
+public class EstEdiGuaViewModel extends AndroidViewModel {
 
-    public EstEdiGuaViewModel() {
-        this.estEdiGuaFormState = new MutableLiveData<>();
+    private DaoEstudiante dao = new DaoEstudiante(getApplication().getApplicationContext());
+
+    private MutableLiveData<EstEdiGuaFormState> estEdiGuaFormState = new MutableLiveData<>();
+
+    public EstEdiGuaViewModel(@NonNull Application application) {
+        super(application);
     }
 
     public LiveData<EstEdiGuaFormState> getEstEdiGuaFormState() {
@@ -53,4 +68,55 @@ public class EstEdiGuaViewModel extends ViewModel {
             return true;
         return cedula.length() != 9;
     }
+
+    public void insertarEstudiante(Estudiante estudiante){
+        dao.transaccion(Operacion.INSERTAR, estudiante.getCedula(), estudiante.getNombre(),
+                estudiante.getApellidos(), String.valueOf(estudiante.getEdad()));
+    }
+
+    public void modificarEstudiante(Estudiante estudiante){
+        dao.transaccion(Operacion.MODIFICAR,estudiante.getCedula(), estudiante.getNombre(),
+                estudiante.getApellidos(), String.valueOf(estudiante.getEdad()));
+    }
+
+    public void listar(){
+        DaoCurso daocurso = new DaoCurso(getApplication().getApplicationContext());
+
+        Datos.getInstance().getCursos().clear();
+
+        Cursor cursor = daocurso.transsaccionCursor(Operacion.LISTAR);
+
+        int idCodigo = cursor.getColumnIndex("codigo");
+        int idDescrip = cursor.getColumnIndex("descripcion");
+        int idCreditos = cursor.getColumnIndex("creditos");
+
+        while (cursor.moveToNext()) {
+            Datos.getInstance().getCursos().add(new Curso(
+                    cursor.getString(idCodigo),
+                    cursor.getString(idDescrip),
+                    cursor.getInt(idCreditos)
+            ));
+        }
+    }
+
+    public void  asignarEstudianteCursos(Estudiante estudiante, List<String> cursos){
+        dao.asignarEstudianteCursos(estudiante.getCedula(), cursos);
+    }
+
+    public  ArrayList<String>  getCursosEstudiante(Estudiante estudiante){
+        DaoCurso daocurso = new DaoCurso(getApplication().getApplicationContext());
+
+        Cursor cursor = daocurso.listarPorEstudiante(estudiante.getCedula());
+
+        int cod_indice = cursor.getColumnIndex("cod");
+        ArrayList<String> seleccionados = new ArrayList<>();
+
+        while (cursor.moveToNext()) {
+            seleccionados.add(cursor.getString(cod_indice));
+        }
+
+        return  seleccionados;
+    }
+
+
 }

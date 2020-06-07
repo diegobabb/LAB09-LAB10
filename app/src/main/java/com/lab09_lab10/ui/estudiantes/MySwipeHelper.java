@@ -15,17 +15,21 @@ import com.lab09_lab10.adapters.MyAdapterEstudiantes;
 import com.lab09_lab10.logicaNegocio.Datos;
 import com.lab09_lab10.logicaNegocio.Estudiante;
 
+import java.util.Objects;
+
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
 
     private MyAdapterEstudiantes adapter;
     private EstudiantesFragment fragment;
+    private EstudiantesViewModel viewModel;
 
     public MySwipeHelper(int dragDirs, int swipeDirs, MyAdapterEstudiantes adapter, EstudiantesFragment fragment) {
         super(dragDirs, swipeDirs);
         this.adapter = adapter;
         this.fragment = fragment;
+        this.viewModel = new EstudiantesViewModel(Objects.requireNonNull(fragment.getActivity()).getApplication());
     }
 
     @Override
@@ -40,7 +44,9 @@ public class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
         switch (direction) {
             case ItemTouchHelper.LEFT:
                 final Estudiante aux = adapter.getmDataset().remove(position);
-                eliminarEstudiante(aux, position);
+                viewModel.eliminar(aux.getCedula());
+                Datos.getInstance().getEstudiantes().remove(aux);
+                adapter.notifyItemRemoved(position);
                 break;
             case ItemTouchHelper.RIGHT:
                 fragment.moveToEstEdiGua(adapter.getmDataset().get(position), position);
@@ -62,21 +68,5 @@ public class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
     }
 
 
-    private void eliminarEstudiante(Estudiante estudiante, int position) {
-        String pre_sql = "DELETE FROM ESTUDIANTE WHERE cedula = '%s'";
-        String pre_sql_matriculados = "DELETE FROM ESTUDIANTExCURSO WHERE cedula = '%s'";
-
-        String sql = String.format(pre_sql, estudiante.getCedula());
-        String sql_eliminar_matriculados = String.format(pre_sql, estudiante.getCedula());
-
-        try {
-            MainActivity.db.execSQL(sql);
-            MainActivity.db.execSQL(sql_eliminar_matriculados);
-            Datos.getInstance().getEstudiantes().remove(estudiante);
-            adapter.notifyItemRemoved(position);
-        } catch (SQLException sqle) {
-            Log.d("ERROR ELIMINANDO", sqle.getMessage());
-        }
-    }
 
 }
